@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="my-4">Заголовки запроса</h1>
+
+<div class="row">
+    <div class="col-md-10">
+        {% if headers %}
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th style="width: 30%">Название заголовка</th>
+                            <th style="width: 70%">Значение</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for name, value in headers.items() %}
+                            <tr>
+                                <td><code>{{ name }}</code></td>
+                                <td><code>{{ value }}</code></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="alert alert-warning">
+                Заголовки не найдены.
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

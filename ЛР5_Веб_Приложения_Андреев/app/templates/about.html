@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="mt-5 text-center">Об авторе</h1>
+<div class="row">
+    <div class="col-md-4 mb-3">
+        <img class="avatar" src="{{ url_for('static', filename='images/avatar.jpg') }}" alt="Author">
+    </div>
+    <div class="col-md-8 text-justify d-flex align-items-center">
+        <ul>
+            <li>ФИО: Андреев Никита Денисович</li>
+            <li>Дата рождения: 28.12.2006</li>
+            <li>Факультет: ФИТ</li>
+            <li>Группа: 241-372</li>
+            <li>2 курс 4 семестр</li>
+            <li>Дисциплина: "Разработка веб-приложений"</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h2>{{ title }}</h2>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {% if user is none %}
+                    <!-- Поле логин (только при создании) -->
+                    <div class="mb-3">
+                        <label for="login" class="form-label">Логин <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control {% if errors.login %}is-invalid{% endif %}" 
+                               id="login" name="login" value="{{ form_data.get('login', '') }}" required>
+                        {% if errors.login %}
+                            <div class="invalid-feedback">{{ errors.login }}</div>
+                        {% else %}
+                            <div class="form-text">Только латинские буквы и цифры, не менее 5 символов</div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Поле пароль (только при создании) -->
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Пароль <span class="text-danger">*</span></label>
+                        <input type="password" class="form-control {% if errors.password %}is-invalid{% endif %}" 
+                               id="password" name="password" required>
+                        {% if errors.password %}
+                            <div class="invalid-feedback">{{ errors.password }}</div>
+                        {% else %}
+                            <div class="form-text">Не менее 8 символов, заглавная и строчная буквы, цифра, без пробелов</div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Фамилия -->
+                    <div class="mb-3">
+                        <label for="last_name" class="form-label">Фамилия</label>
+                        <input type="text" class="form-control {% if errors.last_name %}is-invalid{% endif %}" 
+                               id="last_name" name="last_name" value="{{ form_data.get('last_name', '') }}">
+                        {% if errors.last_name %}
+                            <div class="invalid-feedback">{{ errors.last_name }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Имя -->
+                    <div class="mb-3">
+                        <label for="first_name" class="form-label">Имя <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control {% if errors.first_name %}is-invalid{% endif %}" 
+                               id="first_name" name="first_name" value="{{ form_data.get('first_name', '') }}" required>
+                        {% if errors.first_name %}
+                            <div class="invalid-feedback">{{ errors.first_name }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Отчество -->
+                    <div class="mb-3">
+                        <label for="patronymic" class="form-label">Отчество</label>
+                        <input type="text" class="form-control {% if errors.patronymic %}is-invalid{% endif %}" 
+                               id="patronymic" name="patronymic" value="{{ form_data.get('patronymic', '') }}">
+                        {% if errors.patronymic %}
+                            <div class="invalid-feedback">{{ errors.patronymic }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Выбор роли -->
+                    <div class="mb-3">
+                        <label for="role_id" class="form-label">Роль</label>
+                        <select class="form-select {% if errors.role_id %}is-invalid{% endif %}" id="role_id" name="role_id">
+                            <option value="">— Без роли —</option>
+                            {% for role in roles %}
+                                {% set selected = 'selected' if form_data.get('role_id')|string == role.id|string else '' %}
+                                <option value="{{ role.id }}" {{ selected }}>{{ role.name }}</option>
+                            {% endfor %}
+                        </select>
+                        {% if errors.role_id %}
+                            <div class="invalid-feedback">{{ errors.role_id }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-success">💾 Сохранить</button>
+                        <a href="{{ url_for('user_list') }}" class="btn btn-secondary">Отмена</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

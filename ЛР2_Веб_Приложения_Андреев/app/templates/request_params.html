@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="my-4">Параметры URL</h1>
+
+<div class="row">
+    <div class="col-md-8">
+        {% if params %}
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Переданные параметры</h5>
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for key, value in params.items() %}
+                        <li class="list-group-item">
+                            <strong>{{ key }}:</strong> {{ value }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                <h5>Параметры не переданы</h5>
+                <p class="mb-0">
+                    Попробуйте добавить параметры в URL, например:
+                    <code>?name=Иван&age=25&city=Москва</code>
+                </p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                <h6 class="mb-0">Примеры использования</h6>
+            </div>
+            <div class="card-body">
+                <ul class="mb-0">
+                    <li><code>{{ url_for('request_params') }}?name=Анна&age=20</code></li>
+                    <li><code>{{ url_for('request_params') }}?product=ноутбук&price=50000</code></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

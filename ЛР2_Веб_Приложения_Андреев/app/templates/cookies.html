@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="my-4">Работа с Cookie</h1>
+
+<div class="row">
+    <div class="col-md-8">
+        <!-- отображение сообщения -->
+        {% if message %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endif %}
+
+        <!-- текущее состояние cookie -->
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Текущее состояние</h5>
+            </div>
+            <div class="card-body">
+                {% if cookie_value %}
+                    <div class="alert alert-success mb-0">
+                        <strong>✅ Cookie 'user_preference' установлен:</strong> {{ cookie_value }}
+                    </div>
+                {% else %}
+                    <div class="alert alert-secondary mb-0">
+                        <strong>❌ Cookie 'user_preference' не установлен</strong>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- форма для управления cookie -->
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Управление cookie</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="d-flex gap-3">
+                        <button type="submit" name="action" value="set" class="btn btn-success">
+                            🍪 Установить cookie (user_preference = dark_mode)
+                        </button>
+                        <button type="submit" name="action" value="delete" class="btn btn-danger">
+                            🗑️ Удалить cookie
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

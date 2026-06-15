@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="mt-5 mb-4 text-center">Журнал посещений</h1>
+
+<div class="mb-3 text-center">
+    <a href="{{ url_for('statistics_pages') }}" class="btn btn-outline-primary">📈 По страницам</a>
+    {% if is_admin %}
+        <a href="{{ url_for('statistics_users') }}" class="btn btn-outline-success">👥 По пользователям</a>
+    {% endif %}
+</div>
+
+<table class="table table-striped table-hover">
+    <thead class="table-dark">
+        <tr><th>№</th><th>Пользователь</th><th>Страница</th><th>Дата</th></tr>
+    </thead>
+    <tbody>
+        {% for log in logs %}
+        <tr>
+            <td>{{ loop.index + ((pagination.page - 1) * pagination.per_page) }}</td>
+            <td>{{ log.user_name }}</td>
+            <td><code>{{ log.path }}</code></td>
+            <td>{{ log.created_at.strftime('%d.%m.%Y %H:%M:%S') }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="4" class="text-center">Нет записей</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Пагинация -->
+{% if pagination.pages > 1 %}
+<nav><ul class="pagination justify-content-center">
+    {% if pagination.has_prev %}
+        <li class="page-item"><a class="page-link" href="{{ url_for('statistics_journal', page=pagination.prev_num) }}">« Назад</a></li>
+    {% endif %}
+    <li class="page-item active"><span class="page-link">{{ pagination.page }}</span></li>
+    {% if pagination.has_next %}
+        <li class="page-item"><a class="page-link" href="{{ url_for('statistics_journal', page=pagination.next_num) }}">Вперёд »</a></li>
+    {% endif %}
+</ul></nav>
+{% endif %}
+
+<a href="{{ url_for('user_list') }}" class="btn btn-secondary">← Назад</a>
+{% endblock %}

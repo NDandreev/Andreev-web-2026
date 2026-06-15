@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h2>Счётчик посещений</h2>
+            </div>
+            <div class="card-body">
+                <p class="lead">Вы посетили эту страницу <strong>{{ visit_count }}</strong> раз(а).</p>
+                <p>Счётчик хранится в вашей сессии и сбрасывается при очистке cookies браузера.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

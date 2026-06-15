@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="my-4">Валидация номера телефона</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Введите номер телефона</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Номер телефона</label>
+                        <input type="text" 
+                               class="form-control {% if error %}is-invalid{% endif %}" 
+                               id="phone" 
+                               name="phone" 
+                               value="{{ phone_input }}"
+                               placeholder="+7 (123) 456-75-90">
+                        {% if error %}
+                            <div class="invalid-feedback d-block">
+                                {{ error }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Проверить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        {% if formatted_phone %}
+            <div class="card bg-success text-white">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">✅ Отформатированный номер</h5>
+                </div>
+                <div class="card-body">
+                    <h3 class="mb-0">{{ formatted_phone }}</h3>
+                </div>
+            </div>
+        {% elif error %}
+            <div class="card bg-danger text-white">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">❌ Ошибка валидации</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-0">{{ error }}</p>
+                </div>
+            </div>
+        {% else %}
+            <div class="card bg-secondary text-white">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">ℹ️ Примеры форматов</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="mb-0">
+                        <li><code>+7 (123) 456-75-90</code></li>
+                        <li><code>8(123)4567590</code></li>
+                        <li><code>123.456.75.90</code></li>
+                        <li><code>89123456789</code></li>
+                    </ul>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
