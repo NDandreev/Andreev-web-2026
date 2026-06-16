@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Мои рецензии{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">📝 Мои рецензии</h1>
+
+{% if reviews %}
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Книга</th>
+                <th>Оценка</th>
+                <th>Текст</th>
+                <th>Статус</th>
+                <th>Дата</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for review in reviews %}
+            <tr>
+                <td><a href="{{ url_for('books.detail', book_id=review.book.id) }}">{{ review.book.title }}</a></td>
+                <td>⭐ {{ review.rating }}</td>
+                <td>{{ review.text|truncate(100)|safe }}</td>
+                <td>
+                    <span class="badge 
+                        {% if review.status.name == 'одобрена' %}bg-success
+                        {% elif review.status.name == 'отклонена' %}bg-danger
+                        {% else %}bg-warning text-dark{% endif %}">
+                        {{ review.status.name }}
+                    </span>
+                </td>
+                <td>{{ review.created_at.strftime('%d.%m.%Y') }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-info">Вы ещё не написали ни одной рецензии.</div>
+{% endif %}
+{% endblock %}

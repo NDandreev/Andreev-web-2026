@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Главная - Электронная библиотека{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">📖 Список книг</h1>
+
+{% if books.items %}
+    <div class="row">
+        {% for book in books.items %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 card-hover">
+                {% if book.cover %}
+                <img src="{{ url_for('static', filename='uploads/covers/' + book.cover.filename) }}"
+                     class="card-img-top" alt="{{ book.title }}">
+                {% else %}
+                <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center">
+                    <span class="text-white">Нет обложки</span>
+                </div>
+                {% endif %}
+
+                <div class="card-body">
+                    <h5 class="card-title">{{ book.title }}</h5>
+                    <p class="card-text">
+                        <strong>{{ book.author }}</strong> ({{ book.year }})<br>
+                        <small class="text-muted">Жанры:
+                            {% for genre in book.genres %}
+                                {{ genre.name }}{% if not loop.last %}, {% endif %}
+                            {% else %}
+                                Не указаны
+                            {% endfor %}
+                        </small><br>
+                        <span class="rating-stars">⭐ {{ "%.1f"|format(book.avg_rating) }}</span>
+                        <small>({{ book.reviews_count }} рецензий)</small>
+                    </p>
+                </div>
+
+                <div class="card-footer bg-transparent">
+                    <div class="btn-group w-100">
+                        <a href="{{ url_for('books.detail', book_id=book.id) }}"
+                           class="btn btn-outline-primary">📖 Просмотр</a>
+
+                        {% if current_user.is_authenticated %}
+                            {% if current_user.role.name in ['admin', 'moderator'] %}
+                            <a href="{{ url_for('books.edit_book', book_id=book.id) }}"
+                               class="btn btn-outline-warning">✏️ Ред.</a>
+                            {% endif %}
+
+                            {% if current_user.role.name == 'admin' %}
+                            <button class="btn btn-outline-danger"
+                                    onclick="deleteBook({{ book.id }}, '{{ book.title }}')">🗑️ Удалить</button>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Пагинация -->
+    {% include 'pagination.html' %}
+
+{% else %}
+    <div class="alert alert-info">
+        В библиотеке пока нет книг.
+        {% if current_user.is_authenticated and current_user.role.name == 'admin' %}
+        <a href="{{ url_for('books.add_book') }}">Добавьте первую книгу</a>!
+        {% endif %}
+    </div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+function deleteBook(bookId, title) {
+    if (confirm(`Вы уверены, что хотите удалить книгу "${title}"?`)) {
+        fetch(`/books/book/delete/${bookId}`, {method: 'POST'})
+        .then(() => location.reload());
+    }
+}
+</script>
+{% endblock %}

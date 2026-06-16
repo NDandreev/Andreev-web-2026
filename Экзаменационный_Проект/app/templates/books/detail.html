@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}{{ book.title }} - Электронная библиотека{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        {% if book.cover %}
+        <img src="{{ url_for('static', filename='uploads/covers/' + book.cover.filename) }}"
+             class="img-fluid rounded shadow" alt="{{ book.title }}">
+        {% else %}
+        <div class="bg-secondary text-white p-5 text-center rounded">
+            📖 Нет обложки
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="col-md-8">
+        <h1>{{ book.title }}</h1>
+        <p class="text-muted">
+            <strong>{{ book.author }}</strong> • {{ book.year }} • {{ book.pages }} стр.
+        </p>
+        <p><strong>Издательство:</strong> {{ book.publisher }}</p>
+        <p><strong>Жанры:</strong>
+            {% for genre in book.genres %}
+                <span class="badge bg-secondary">{{ genre.name }}</span>
+            {% endfor %}
+        </p>
+        <p><strong>Рейтинг:</strong> ⭐ {{ "%.1f"|format(book.avg_rating) }} ({{ book.reviews|length }} оценок)</p>
+
+        <div class="mt-4">
+            <h5>Описание:</h5>
+            <div class="border p-3 rounded">
+                {{ book.description|safe }}
+            </div>
+        </div>
+
+        <div class="mt-4">
+            {% if current_user.is_authenticated and current_user.role.name == 'admin' %}
+            <a href="{{ url_for('books.edit_book', book_id=book.id) }}" class="btn btn-warning">✏️ Редактировать</a>
+            <button onclick="deleteBook({{ book.id }}, '{{ book.title }}')" class="btn btn-danger">🗑 Удалить</button>
+            {% endif %}
+            <a href="{{ url_for('books.index') }}" class="btn btn-secondary">← Назад</a>
+        </div>
+    </div>
+</div>
+
+<!-- Рецензии -->
+<div class="row mt-5">
+    <div class="col-12">
+        <h3>Рецензии ({{ approved_reviews|length }})</h3>
+        {% if current_user.is_authenticated and current_user.role.name in ['user', 'moderator', 'admin'] %}
+            {% if not user_review %}
+                <a href="{{ url_for('reviews.add_review', book_id=book.id) }}" class="btn btn-primary mb-3">✍️ Написать рецензию</a>
+            {% else %}
+                <div class="alert alert-info">Вы уже оставили рецензию на эту книгу</div>
+            {% endif %}
+        {% endif %}
+
+        {% for review in approved_reviews %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <h6>{{ review.user.full_name }}</h6>
+                    <span>⭐ {{ review.rating }}</span>
+                </div>
+                <p class="mt-2">{{ review.text|safe }}</p>
+                <small class="text-muted">{{ review.created_at.strftime('%d.%m.%Y %H:%M') }}</small>
+            </div>
+        </div>
+        {% else %}
+        <p class="text-muted">Пока нет одобренных рецензий. Будьте первым!</p>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+function deleteBook(bookId, title) {
+    if (confirm(`Вы уверены, что хотите удалить книгу "${title}"?`)) {
+        fetch(`/book/delete/${bookId}`, {method: 'POST'})
+        .then(() => window.location.href = '/');
+    }
+}
+</script>
+{% endblock %}

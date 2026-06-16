@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Рассмотрение рецензии{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3>Рассмотрение рецензии</h3>
+            </div>
+            <div class="card-body">
+                <p><strong>Книга:</strong> <a href="{{ url_for('books.detail', book_id=review.book.id) }}">{{ review.book.title }}</a></p>
+                <p><strong>Автор рецензии:</strong> {{ review.user.full_name }}</p>
+                <p><strong>Оценка:</strong> ⭐ {{ review.rating }}</p>
+                <p><strong>Дата:</strong> {{ review.created_at.strftime('%d.%m.%Y %H:%M') }}</p>
+                <div class="border p-3 mb-3">
+                    <h5>Текст рецензии:</h5>
+                    {{ review.text|safe }}
+                </div>
+
+                <form method="POST" action="{{ url_for('reviews.approve_review', review_id=review.id) }}" style="display:inline;">
+                    <button type="submit" class="btn btn-success">✅ Одобрить</button>
+                </form>
+                <form method="POST" action="{{ url_for('reviews.reject_review', review_id=review.id) }}" style="display:inline;">
+                    <button type="submit" class="btn btn-danger">❌ Отклонить</button>
+                </form>
+                <a href="{{ url_for('reviews.moderation') }}" class="btn btn-secondary">← Назад</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

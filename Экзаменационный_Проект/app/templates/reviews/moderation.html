@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Модерация рецензий{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">⚖️ Модерация рецензий</h1>
+
+{% if reviews.items %}
+<div class="table-responsive">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Книга</th>
+                <th>Пользователь</th>
+                <th>Дата</th>
+                <th>Действие</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for review in reviews.items %}
+            <tr>
+                <td><a href="{{ url_for('books.detail', book_id=review.book.id) }}">{{ review.book.title }}</a></td>
+                <td>{{ review.user.full_name }}</td>
+                <td>{{ review.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
+                <td>
+                    <a href="{{ url_for('reviews.moderate_review', review_id=review.id) }}" class="btn btn-sm btn-primary">Рассмотреть</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Пагинация -->
+{% include 'pagination.html' %}
+
+{% else %}
+<div class="alert alert-success">Нет рецензий, ожидающих модерации.</div>
+{% endif %}
+{% endblock %}
